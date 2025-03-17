@@ -276,3 +276,39 @@ CREATE TABLE transactions_p1 PARTITION OF transactions
 ```
 
 ## Transaction
+### Định nghĩa
+Transaction là 1 tập hợp gồm 1 hoặc nhiều câu lệnh SQL được thực thi như 1 câu khối lệnh SQL. Hay nói cách khác, khối lệnh SQL này chỉ được coi là thực thi thành công nếu tất cả các câu lệnh trong đó được thực thi thành công.
+
+### Tính chất
+Transaction trong PostgreSQL thỏa mãn 4 tính chất ACID của CSDL quan hệ thông thường:
+* **Atomicity**: Tất cả các câu lệnh trong transaction phải thành công hết hoặc fail hết.
+* **Consistency**: CSDL giữ nguyên trạng thái hợp lệ sau mỗi transaction.
+* **Isolation**: Các transaction khác nhau không ảnh hưởng đến nhau, kể cả khi chúng được thực thi đồng thời.
+* **Durability**: Sau khi transaction được COMMIT, thay đổi sẽ được coi là vĩnh viễn, kể cả khi hệ thống sập.
+
+### Isolation levels
+Isolation levels có thể được hiểu là mức độ cô lập giữa các transaction được thực hiện đồng thời. Trong CSDL quan hệ có 4 mức độ cô lập như sau.
+#### 1. Read uncommitted
+- Mức độ cô lập thấp nhất.
+- Cho phép tất cả các transaction hoạt động đúng theo thứ tự mà không phải chờ đợi các transaction khác.
+- Giúp các transaction được thực hiện với tốc độ rất cao
+- Nhược điểm lớn của mức độ này là các transaction có thể đọc dữ liệu chưa được commit. Lỗi này còn được gọi là **Dirty Read**.
+
+#### 2. Read committed
+- Level mặc định của PostgreSQL. 
+- Các transaction sẽ không thể đọc được dữ liệu chưa được commit từ các transaction khác.
+- Có thể tránh được **Dirty Read**.
+- Nhược điểm là khi gọi cùng 1 truy vấn 2 lần khác nhau trong 1 transaction, có thể ra kết quả khác nhau. Lỗi này gọi là **Unrepeatable Read**.
+
+#### 3. Repeatable Read
+- Đảm bảo các truy vấn giống nhau trong cùng 1 transaction sẽ trả về kết quả giống nhau, do đó tránh được **Unrepeatable Read**.
+- Tuy nhiên, không thể tránh được **Phantom Read**.
+
+#### 4. Serializable
+- Các transaction được thực hiện lần lượt, đảm bảo mỗi thời điểm chỉ xử lý tối đa 1 transaction.
+- Tránh được các lỗi liên quan đến isolation level, tuy nhiên hiệu năng bị giảm đáng kể.
+
+#### 5. Snapshot Isolation
+Ngoài 4 mức độ thường dùng của CSDL thông thường, PostgreSQL còn hỗ trợ 1 mức độ nữa cũng có khả năng tránh được các lỗi liên quan đến isolation level, gọi là **Snapshot Isolation**. Mỗi lần thực thi truy vấn, PostgreSQL sẽ tạo ra 1 bản sao cho dữ liệu hiện tại, sau đó thực thi transation trên bản sao đó. Do bản sao không thể thay đổi khi thực thi transaction nên sẽ tránh được mọi lỗi liên quan.
+
+Tuy nhiên, việc tạo mới, xóa bỏ hoặc đồng bộ các bản sao không dễ dàng, do đó PostgreSQL hỗ trợ thêm tính năng MVCC (Multiversion Concurrency Control) để hỗ trợ kiểm soát các bản sao được tạo ra.
