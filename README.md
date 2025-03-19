@@ -1,4 +1,16 @@
-# SQL
+# PostgreSQL
+## So sánh với các SQL database khác
+| Tiêu chí                  | PostgreSQL  | MySQL      | SQL Server  | Oracle     |
+|---------------------------|------------|------------|------------|------------|
+| **Hiệu suất truy vấn đơn giản**  | Trung bình  | Nhanh      | Nhanh      | Nhanh      |
+| **Hiệu suất truy vấn phức tạp**  | Tốt        | Trung bình | Tốt        | Rất tốt    |
+| **Hỗ trợ JSON/NoSQL**     | Rất tốt    | Trung bình | Tốt        | Tốt        |
+| **Khả năng mở rộng**      | Tốt        | Trung bình | Rất tốt    | Rất tốt    |
+| **Hỗ trợ giao dịch ACID** | Rất tốt    | Trung bình (MyISAM không hỗ trợ) | Rất tốt    | Rất tốt    |
+| **Replication**           | Tốt        | Rất tốt    | Rất tốt    | Rất tốt    |
+| **Sharding**              | Trung bình (cần tool bên ngoài) | Kém | Tốt | Rất tốt |
+| **Chi phí**               | Miễn phí   | Miễn phí   | Trả phí (Enterprise) | Rất đắt |
+
 
 ## CRUD
 Create, Read, Update, Delete là các thao tác cơ bản nhất trong cơ sở dữ liệu để quản lý dữ liệu.
